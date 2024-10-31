@@ -1,7 +1,7 @@
 name: Deploy to Test Server
 on:
   push:
-    branches: [ "dev" ]
+    branches: ["develop"]
 
 jobs:
   lint:
@@ -33,3 +33,9 @@ jobs:
         run: npm ci
       - name: Format
         run: npm run format:fix
+  build:
+    needs: [lint, format]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        run: echo Deploying...
