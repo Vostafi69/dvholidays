@@ -19,7 +19,6 @@ jobs:
       - name: Lint
         run: cd client && npm run lint
   format:
-    needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
