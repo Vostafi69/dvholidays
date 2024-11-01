@@ -1,28 +1,27 @@
 version: "3"
 
 services:
-  nginx:
-    image: nginx:1.15.12-alpine
-    container_name: dvholidays-nginx
-    restart: unless-stopped
-    ports:
-      - 80:80
-      # - 443:443
-    # volumes:
-    #   - /root/dvholidays/nginx:/etc/nginx/conf.d
-    networks:
-      - dvholidays-nerwork
-
   client:
     build:
       context: ./client
       dockerfile: Dockerfile.client.prod
-    ports:
-      - "3000:3000"
+    container_name: dvholidays-client-prod
     networks:
       - dvholidays-nerwork
+
+  nginx:
+    image: nginx:1.15.12-alpine
+    container_name: dvholidays-nginx-prod
+    restart: unless-stopped
+    ports:
+      - 80:80
     volumes:
-      - ./client:/app
+      - ./nginx/dvholidays.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - client
+    networks:
+      - dvholidays-nerwork
 
 networks:
   dvholidays-nerwork:
+    driver: bridge
