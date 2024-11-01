@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:1.15.12-alpine
+    container_name: dvholidays-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      # - 443:443
+    # volumes:
+    #   - /root/dvholidays/nginx:/etc/nginx/conf.d
+    networks:
+      - dvholidays-nerwork
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.client.prod
+    ports:
+      - "3000:3000"
+    networks:
+      - dvholidays-nerwork
+    volumes:
+      - ./client:/app
+
+networks:
+  dvholidays-nerwork:

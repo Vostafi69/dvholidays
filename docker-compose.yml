@@ -8,9 +8,9 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - dvholidays
+      - dvholidays-nerwork
     volumes:
       - ./client:/app
 
 networks:
-  dvholidays:
+  dvholidays-nerwork:
