@@ -1,11 +1,55 @@
 name: Deploy to stage server
 on:
-  pull_request:
+  push:
     branches: ["stage"]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy
-        run: echo Deploying...
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Cache deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Isntall deps
+        run: cd client && npm ci
+      - name: Lint
+        run: cd client && npm run lint
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Cache deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install deps
+        run: cd client && npm ci
+      - name: Format
+        run: cd client && npm run format:fix
+  stage:
+    needs: [lint, format]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: staging
+      cancel-in-progress: true
+    steps:
+      - name: ssh command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: rm -rf dvholidays
+            git clone git@github.com:Vostafi69/dvholidays.git
+            cd ./dvholidays
+            docker compose -f docker-compose-stage.yml down
+            docker image rm dvholidays-client:latest
+            docker compose -f docker-compose-stage.yml up -d --build
