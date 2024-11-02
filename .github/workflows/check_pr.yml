@@ -1,7 +1,6 @@
-name: Deploy to Test Server
+name: Check pull_request
 on:
-  push:
-    branches: ["develop"]
+  pull_request:
 
 jobs:
   lint:
@@ -32,9 +31,3 @@ jobs:
         run: cd client && npm ci
       - name: Format
         run: cd client && npm run format:fix
-  build:
-    needs: [lint, format]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy
-        run: echo Deploying...
