@@ -5,7 +5,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.client.prod
-    container_name: dvholidays-client-prod
+    container_name: dvholidays-client-stage
     networks:
       - dvholidays-nerwork
 
@@ -16,7 +16,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./nginx/dvholidays.conf:/etc/nginx/nginx.stage.conf:ro
+      - ./nginx/dvholidays.stage.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - client
     networks:
