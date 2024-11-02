@@ -15,7 +15,7 @@ jobs:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Isntall deps
-        run: cd client && npm ci
+        run: cd client && npm ci --force
       - name: Lint
         run: cd client && npm run lint
   format:
@@ -29,7 +29,7 @@ jobs:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install deps
-        run: cd client && npm ci
+        run: cd client && npm ci --force
       - name: Format
         run: cd client && npm run format:fix
   stage:
