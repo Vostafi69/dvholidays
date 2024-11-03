@@ -11,7 +11,7 @@ const config: Config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
-  modulePathIgnorePatterns: ["<rootDir>/test/"],
+  modulePathIgnorePatterns: ["<rootDir>/tests/"],
   testEnvironment: "jsdom",
 };
 
