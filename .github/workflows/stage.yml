@@ -7,33 +7,36 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Cache deps
-        uses: actions/cache@v3
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Isntall deps
-        run: cd client && npm ci --force
-      - name: Lint
-        run: cd client && npm run lint
+          node-version: 20.x.x
+          cache: npm
+      - run: cd client && npm ci --force
+      - run: cd client && npm run lint
+      - run: cd client && npm run lint:types
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Cache deps
-        uses: actions/cache@v3
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install deps
-        run: cd client && npm ci --force
-      - name: Format
-        run: cd client && npm run format:fix
+          node-version: 20.x.x
+          cache: npm
+      - run: cd client && npm ci --force
+      - run: cd client && npm run format:fix
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20.x.x
+          cache: npm
+      - run: cd client && npm ci --force
+      - run: cd client && npm run test
   stage:
-    needs: [lint, format]
+    needs: [lint, format, test]
     runs-on: ubuntu-latest
     concurrency:
       group: staging
@@ -54,3 +57,24 @@ jobs:
             docker compose -f docker-compose-stage.yml down
             docker image rm dvholidays-client:latest
             docker compose -f docker-compose-stage.yml up -d --build
+  e2e:
+    needs: stage
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x.x
+      - name: Install dependencies
+        run: npm ci --force
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps --force
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
