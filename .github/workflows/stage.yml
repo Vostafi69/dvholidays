@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/cache@v3
-      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
       - run: cd client && npm ci --force
       - run: cd client && npm run lint
       - run: cd client && npm run lint:types
@@ -21,10 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/cache@v3
-      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
       - run: cd client && npm ci --force
       - run: cd client && npm run format:fix
   test:
@@ -32,10 +32,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/cache@v3
-      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
       - run: cd client && npm ci --force
       - run: cd client && npm run test
   stage:
@@ -67,10 +67,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/cache@v3
-      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
       - name: Install dependencies
         run: cd client && npm ci --force
       - name: Install Playwright Browsers
