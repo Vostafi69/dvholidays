@@ -6,28 +6,31 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Cache deps
-        uses: actions/cache@v3
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Isntall deps
-        run: cd client && npm ci --force
-      - name: Lint
-        run: cd client && npm run lint
+      - run: cd client && npm ci --force
+      - run: cd client && npm run lint
+      - run: cd client && npm run lint:types
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Cache deps
-        uses: actions/cache@v3
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
         with:
           path: ~/.npm
           key: node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install deps
-        run: cd client && npm ci --force
-      - name: Format
-        run: cd client && npm run format:fix
+      - run: cd client && npm ci --force
+      - run: cd client && npm run format:fix
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v3
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+      - run: cd client && npm ci --force
+      - run: cd client && npm run test
