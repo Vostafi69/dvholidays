@@ -47,5 +47,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            whoami
-            ls -a
+            rm -rf dvholidays
+            git clone git@github.com:Vostafi69/dvholidays.git
+            cd ./dvholidays
+            git checkout stage
+            docker compose -f docker-compose-stage.yml down
+            docker image rm dvholidays-client:latest
+            docker compose -f docker-compose-stage.yml up -d --build
