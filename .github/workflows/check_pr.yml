@@ -10,8 +10,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           path: ~/.npm
-          node-version: 20.x.x
-          cache: npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - run: cd client && npm ci --force
       - run: cd client && npm run lint
       - run: cd client && npm run lint:types
@@ -22,8 +21,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           path: ~/.npm
-          node-version: 20.x.x
-          cache: npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - run: cd client && npm ci --force
       - run: cd client && npm run format:fix
   test:
@@ -33,7 +31,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           path: ~/.npm
-          node-version: 20.x.x
-          cache: npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
       - run: cd client && npm ci --force
       - run: cd client && npm run test
