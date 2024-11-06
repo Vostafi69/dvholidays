@@ -14,7 +14,7 @@ services:
     container_name: dvholidays-nginx-stage
     restart: unless-stopped
     ports:
-      - 8080:80
+      - 8081:80
     volumes:
       - ./nginx/dvholidays.stage.conf:/etc/nginx/nginx.conf:ro
     depends_on:
